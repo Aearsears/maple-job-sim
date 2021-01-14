@@ -1,12 +1,12 @@
+$(function(){
 // The attributes of the player.
 var player = {
-    x: 200,
-    y: 200,
-    x_v: 0,
-    y_v: 0,
+    pos : [500,500],
+    pos_v : [0,0],
     jump : true,
-    height: 20,
-    width: 20
+    height: 78,
+    width: 57,
+    Sprite : new Sprite('player_sprites/player_idle.png',[500,500],[78,57],[0,1,2])
     };
 // The status of the arrow keys
 var keys = {
@@ -21,42 +21,7 @@ var friction = 0.7;
 var num = 2;
 // The platforms
 var platforms = [];
-// Function to render the canvas
-function rendercanvas(){
-    ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 270, 270);
-}
-// Function to render the player
-function renderplayer(){
-    // ctx.fillStyle = "#F08080";
-    // ctx.fillRect((player.x)-20, (player.y)-20, player.width, player.height);
-    var ctx = document.getElementById('canvas').getContext('2d');
-    var img = new Image();
-    img.onload = function(){
-        ctx.drawImage(img,player.x,player.y);
-    }
-    img.src='char.png'
-    }
-// Function to create platforms
-function createplat(){
-    for(i = 0; i < num; i++) {
-        platforms.push(
-            {
-            x: 100 * i,
-            y: 200 + (30 * i),
-            width: 110,
-            height: 15
-            }
-        );
-    }
-    }
-// Function to render platforms
-function renderplat(){
-    ctx.fillStyle = "#45597E";
-    ctx.fillRect(platforms[0].x, platforms[0].y, platforms[0].width, platforms[0].height);
-    ctx.fillRect(platforms[1].x, platforms[1].y, platforms[1].width,platforms[1]. height);
 
-}
 // This function will be called when a key on the keyboard is pressed
 function keydown(e) {
     // 37 is the code for the left arrow key
@@ -92,10 +57,11 @@ function loop() {
     // If the player is not jumping apply the effect of frictiom
     if(player.jump == false) {
         player.x_v *= friction;
-    } else {
-        // If the player is in the air then apply the effect of gravity
-        player.y_v += gravity;
     }
+    // } else {
+    //     // If the player is in the air then apply the effect of gravity
+    //     player.y_v += gravity;
+    // }
     player.jump = true;
     // If the left key is pressed increase the relevant horizontal velocity
     if(keys.left) {
@@ -126,12 +92,85 @@ function loop() {
     renderplayer();
     renderplat();
 }
-canvas=document.getElementById("canvas");
-ctx=canvas.getContext("2d");
-ctx.canvas.height = 270;
-ctx.canvas.width = 270;
-createplat();
+
+bgcanvas=document.getElementById("bgCanvas");
+bgctx=bgcanvas.getContext("2d");
+
+encanvas=document.getElementById("entityCanvas");
+enctx=encanvas.getContext("2d");
+
+var img = new Image();
+img.src='henesysground.png';
+img.onload = function(){
+    var pattern = bgctx.createPattern(img, 'no-repeat');
+    bgctx.fillStyle = pattern;
+    bgctx.fillRect(0, 0, 800, 600);
+};
+
+var p1 = new Image();
+p1.src = 'player_sprites/player_idle.png'
+p1.onload = function(){
+    
+    init();
+};
+
+const scale = 1;
+const width = 57;
+const height = 78;
+const scaledWidth = scale * width;
+const scaledHeight = scale * height;
+
+function drawFrame(frameX, frameY, canvasX, canvasY) {
+    enctx.drawImage(p1,
+                  frameX * width, frameY * height, width, height,
+                  canvasX, canvasY, scaledWidth, scaledHeight);
+  }
+  const cycleLoop = [0, 1, 2, 1];
+  let currentLoopIndex = 0;
+  let frameCount =0;
+
+  function step(){
+      frameCount++;
+      if (frameCount<30){
+          window.requestAnimationFrame(step);
+          return;
+      }
+      frameCount = 0;
+      enctx.clearRect(0,0,encanvas.width,encanvas.height);
+      drawFrame(cycleLoop[currentLoopIndex],0,0,0);
+      currentLoopIndex++;
+      if (currentLoopIndex >= cycleLoop.length) {
+        currentLoopIndex = 0;
+      }
+      window.requestAnimationFrame(step);
+    }
+    
+    function init(){
+        document.addEventListener("keydown",keydown);
+        document.addEventListener("keyup",keyup);
+        window.requestAnimationFrame(step);
+}
+
+//npm server to get resources
+//http-server -c-1
+
 // Adding the event listeners
-document.addEventListener("keydown",keydown);
-document.addEventListener("keyup",keyup);
-setInterval(loop,22);
+// document.addEventListener("keydown",keydown);
+// document.addEventListener("keyup",keyup);
+// setInterval(loop,22);
+
+// The main game loop
+// var lastTime;
+// function main() {
+//     var now = Date.now();
+//     var dt = (now - lastTime) / 1000.0;
+
+//     update(dt);
+//     render();
+
+//     lastTime = now;
+//     requestAnimFrame(main);
+// };
+
+
+});
