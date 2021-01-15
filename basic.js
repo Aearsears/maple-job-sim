@@ -1,13 +1,4 @@
 $(function(){
-// The attributes of the player.
-var player = {
-    pos : [500,500],
-    pos_v : [0,0],
-    jump : true,
-    height: 78,
-    width: 57,
-    Sprite : new Sprite('player_sprites/player_idle.png',[500,500],[78,57],[0,1,2])
-    };
 // The status of the arrow keys
 var keys = {
     right: false,
@@ -99,7 +90,7 @@ bgctx=bgcanvas.getContext("2d");
 encanvas=document.getElementById("entityCanvas");
 enctx=encanvas.getContext("2d");
 
-var img = new Image();
+let img = new Image();
 img.src='henesysground.png';
 img.onload = function(){
     var pattern = bgctx.createPattern(img, 'no-repeat');
@@ -107,49 +98,90 @@ img.onload = function(){
     bgctx.fillRect(0, 0, 800, 600);
 };
 
-var p1 = new Image();
-p1.src = 'player_sprites/player_idle.png'
+let p1 = new Image();
+p1.src = 'player_sprites/player_nude_comp.png'
 p1.onload = function(){
     
     init();
 };
 
-const scale = 1;
-const width = 57;
-const height = 78;
-const scaledWidth = scale * width;
-const scaledHeight = scale * height;
+const SCALE = 1;
+const WIDTH = 45;
+const HEIGHT = 66;
+const SCALEDWIDTH = SCALE * WIDTH;
+const SCALEDHEIGHT = SCALE * HEIGHT;
+const MOVEMENT_SPEED = 20;
+
+function init(){
+    document.addEventListener("keydown",keydown);
+    document.addEventListener("keyup",keyup);
+    window.requestAnimationFrame(gameloop);
+}
 
 function drawFrame(frameX, frameY, canvasX, canvasY) {
     enctx.drawImage(p1,
-                  frameX * width, frameY * height, width, height,
-                  canvasX, canvasY, scaledWidth, scaledHeight);
+                  frameX, frameY * HEIGHT, WIDTH, HEIGHT,
+                  canvasX, canvasY, SCALEDWIDTH, SCALEDHEIGHT);
   }
-  const cycleLoop = [0, 1, 2, 1];
-  let currentLoopIndex = 0;
-  let frameCount =0;
 
-  function step(){
+  const CYCLELOOPIDLE = [0, 1, 2, 1];
+  const CYCLEWALK = [0, 1, 2, 3];
+  const CYCLEJUMP = 1;
+  const RIGHT = 0;
+  const LEFT =9;
+  let currentLoopIndex = 0;
+  let frameCount = 0;
+  let currentDir = 0; //left or right
+
+  //later create player class that inherits from entity class
+  let posX = 0;
+  let posY = 0;
+
+
+  function gameloop(){
       frameCount++;
-      if (frameCount<30){
-          window.requestAnimationFrame(step);
+      if (frameCount<15){
+          window.requestAnimationFrame(gameloop);
           return;
       }
       frameCount = 0;
       enctx.clearRect(0,0,encanvas.width,encanvas.height);
-      drawFrame(cycleLoop[currentLoopIndex],0,0,0);
+      let hasMoved = false;
+      //check for movement
+      if(keys.left){
+        posX -=MOVEMENT_SPEED;
+        currentDir= LEFT;
+        hasMoved = true;
+      }
+      if(keys.right){
+          posX += MOVEMENT_SPEED;
+          currentDir = RIGHT;
+          hasMoved = true;
+      }
+
+      //then redraw the position of the entity
+      if(hasMoved){
+          if(currentDir==0){
+
+              drawFrame((CYCLEWALK[currentLoopIndex]+3)*WIDTH,0,posX,posY);
+            }
+            else{
+              drawFrame((CYCLEWALK[currentLoopIndex]+12)*WIDTH,0,posX,posY);
+
+          }
+
+      }
+      else{
+
+          drawFrame((CYCLELOOPIDLE[currentLoopIndex]+currentDir)*WIDTH,0,posX,posY);
+      }
       currentLoopIndex++;
-      if (currentLoopIndex >= cycleLoop.length) {
+      if (currentLoopIndex >= CYCLELOOPIDLE.length) {
         currentLoopIndex = 0;
       }
-      window.requestAnimationFrame(step);
+      window.requestAnimationFrame(gameloop); 
     }
     
-    function init(){
-        document.addEventListener("keydown",keydown);
-        document.addEventListener("keyup",keyup);
-        window.requestAnimationFrame(step);
-}
 
 //npm server to get resources
 //http-server -c-1
