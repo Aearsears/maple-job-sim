@@ -273,4 +273,12 @@ function drawFrame(img,frameX, frameY, canvasX, canvasY) {
 //https://maplestory.io/api/GMS/219/mob/100004/
 //https://maplestory.io/api/GMS/219/mob/100004/render/move
 //https://keycode.info/
+//https://maplestory.io/api/character/%7B%22ItemId%22%3A2000%2C%22Version%22%3A%22219%22%2C%22Region%22%3A%22GMS%22%7D%2C%7B%22ItemId%22%3A12012%2C%22Version%22%3A%22219%22%2C%22Region%22%3A%22GMS%22%7D/walk1/animated
+
+
+//https://maplestory.io/api/character/%7B%22itemId%22%3A2000%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A12000%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A1012394%2C%22animationName%22%3A%22default%22%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A50004%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A30476%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A1001020%2C%22version%22%3A%22219%22%7D%2C%7B%22itemId%22%3A1050291%2C%22version%22%3A%22219%22%7D/walk1/animated?showears=false&showLefEars=false&showHighLefEars=undefined&resize=1&name=&flipX=false&bgColor=0,0,0,0
+
+//MAP JSON https://maplestory.io/api/GMS/219/map/100000203
+//https://maplestory.io/api/GMS/219/map/100000203/render
+
 });
